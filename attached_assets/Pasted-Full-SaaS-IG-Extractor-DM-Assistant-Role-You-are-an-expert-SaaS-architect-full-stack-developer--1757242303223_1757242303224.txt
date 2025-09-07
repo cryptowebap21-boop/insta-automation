@@ -1,0 +1,155 @@
+Full SaaS: IG Extractor + DM Assistant
+Role: You are an expert SaaS architect, full‑stack developer, and product designer. Task: Build a complete, production‑ready SaaS web application that combines an Instagram handle extraction tool with a DM assistant, optimized for mobile‑first marketers.
+
+1️⃣ Core Product Requirements
+Authentication & Plans
+Magic‑link login via email (no passwords).
+
+Plans & Quotas:
+
+Free (Test): 1 CSV/day, up to 150 sites, 10 DMs/day.
+
+Starter ($55/mo): 200 DMs/day + 200 extractions/day.
+
+Pro ($87/mo): 330 DMs/day + 330 extractions/day + DM scheduling.
+
+Agency ($155/mo): 500 DMs/day + 500 extractions/day + multiple IG account support.
+
+Daily quota reset at midnight UTC.
+
+Upgrade prompts inline when quota exceeded.
+
+CSV Extraction Tool
+User uploads CSV of websites.
+
+System fetches each page, extracts instagram.com/username links.
+
+Deduplicate, clean usernames, compute confidence score.
+
+Display results in a table with export options (CSV, XLSX, JSON).
+
+DM Assistant
+User uploads CSV of IG handles.
+
+Template builder with placeholders: {{name}}, {{topic}}.
+
+Generate spintax variations to avoid duplicate messages.
+
+Build Send Queue with deep links: https://instagram.com/direct/new/?username={{handle}}&text={{message}}
+
+Rate advisor shows safe sending limit per plan.
+
+Track statuses: Sent / Replied / Interested / Not a Fit.
+
+Scheduler (Pro+): set times for reminders.
+
+2️⃣ Tech Stack
+Frontend & API: Next.js 14 on Vercel (Free tier).
+
+Database/Auth/Storage: Supabase (Free tier).
+
+Background Workers: Cloudflare Workers + Queues (Free dev tier).
+
+Payments: Lemon Squeezy (Merchant of Record).
+
+Email: Resend (Free tier) for magic links + weekly reports.
+
+Analytics: PostHog (Free tier) for funnels, retention, feature usage.
+
+3️⃣ Database Schema (Supabase)
+users: id, email, plan, plan_renewal_at, daily_dm_quota, daily_extract_quota
+
+uploads: id, user_id, filename, rows, created_at
+
+jobs: id, user_id, type, status, total, completed, created_at, meta (JSONB)
+
+results: id, job_id, domain, ig_handle, confidence, source_url
+
+dm_queue: id, user_id, ig_handle, template_id, status, scheduled_at, sent_at
+
+usage_log: id, user_id, date, dms_used, extracts_used
+
+Apply Row Level Security so users only see their own data.
+
+4️⃣ Workflows
+Signup/Login
+
+Magic link → onboarding → show quotas + upgrade options.
+
+CSV Upload (Extraction)
+
+Upload CSV → store in Supabase Storage.
+
+Cloudflare Worker processes queue, extracts IG handles.
+
+UI polls every 3s for progress updates.
+
+DM Assistant
+
+Upload IG handles CSV → build queue + spintax variations.
+
+Generate deep links for sending.
+
+Track statuses in dm_queue.
+
+Scheduler for Pro+.
+
+Payments
+
+Hosted checkout via Lemon Squeezy.
+
+Webhook updates users.plan and resets quotas.
+
+Analytics
+
+Track: CSV uploads, extractions completed, DMs created, plan upgrades, churn.
+
+5️⃣ UI/UX Requirements
+Dashboard: quotas left, quick actions (Upload CSV / Build DM Queue).
+
+Extraction Results: live progress bar, export buttons.
+
+DM Assistant: template builder, queue view, send links, scheduler.
+
+Pricing Page: Free, Starter ($55), Pro ($87, highlight), Agency ($155).
+
+Reports: weekly email with results, top templates, usage stats.
+
+Mobile‑first design.
+
+6️⃣ Deployment
+Frontend/API: Vercel.
+
+Workers: Cloudflare Workers.
+
+Database: Supabase.
+
+Payments: Lemon Squeezy checkout + webhook on Vercel.
+
+Email: Resend with custom domain.
+
+Analytics: PostHog on all pages.
+
+7️⃣ Deliverables
+Full Next.js repo (frontend + API routes).
+
+Supabase migrations + RLS policies.
+
+Cloudflare Worker code for extraction.
+
+Payment + webhook integration.
+
+PostHog + Resend setup.
+
+Example seed data + test CSVs.
+
+8️⃣ Development Standards
+All background jobs async & non‑blocking.
+
+Inline upsell when hitting quota.
+
+No hardcoded secrets — use .env.
+
+Clean, modular, scalable code.
+
+✅ Instruction to Trae AI: Generate the entire codebase, database migrations, worker scripts, and integration logic exactly as specified above. Ensure the output is production‑ready, mobile‑first, and optimized for performance, security, and scalability.
