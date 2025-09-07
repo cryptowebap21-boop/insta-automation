@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import CampaignsPage from "@/pages/campaigns";
 import ExtractionsPage from "@/pages/extractions";
 import TemplatesPage from "@/pages/templates";
+import AccountsPage from "@/pages/accounts";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -25,6 +26,7 @@ function Router() {
           <Route path="/campaigns" component={CampaignsPage} />
           <Route path="/extractions" component={ExtractionsPage} />
           <Route path="/templates" component={TemplatesPage} />
+          <Route path="/accounts" component={AccountsPage} />
         </>
       )}
       <Route component={NotFound} />

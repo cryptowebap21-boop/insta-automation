@@ -33,6 +33,11 @@ export default function Navigation() {
                 Templates
               </a>
             </Link>
+            <Link href="/accounts">
+              <a className="text-muted-foreground hover:text-foreground transition-colors" data-testid="nav-accounts">
+                Accounts
+              </a>
+            </Link>
             {user && (
               <div className="flex items-center space-x-2 glass-card px-3 py-1.5 rounded-full" data-testid="user-info">
                 <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
