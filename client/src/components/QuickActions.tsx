@@ -1,13 +1,15 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import CampaignModal from "./CampaignModal";
 
 export default function QuickActions() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -65,15 +67,16 @@ export default function QuickActions() {
   };
 
   const handleDMCampaign = () => {
-    // Navigate to campaigns page or open modal
-    toast({
-      title: "Coming Soon!",
-      description: "Campaign builder is being developed 🚧",
-    });
+    setShowCampaignModal(true);
   };
 
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <>
+      <CampaignModal 
+        isOpen={showCampaignModal} 
+        onClose={() => setShowCampaignModal(false)} 
+      />
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="glass-card rounded-2xl p-8 hover-glow" data-testid="card-extract-action">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center animate-float">
@@ -118,5 +121,6 @@ export default function QuickActions() {
         </div>
       </div>
     </section>
+    </>
   );
 }

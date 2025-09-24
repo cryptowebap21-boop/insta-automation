@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Campaign } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import CampaignModal from "./CampaignModal";
 
 interface ActiveCampaignsProps {
   campaigns: Campaign[];
@@ -12,6 +14,7 @@ interface ActiveCampaignsProps {
 export default function ActiveCampaigns({ campaigns, isLoading }: ActiveCampaignsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
 
   const startCampaignMutation = useMutation({
     mutationFn: async (campaignId: string) => {
@@ -98,7 +101,12 @@ export default function ActiveCampaigns({ campaigns, isLoading }: ActiveCampaign
   const activeCampaigns = campaigns.filter(c => c.status !== 'completed' && c.status !== 'failed');
 
   return (
-    <section className="space-y-6">
+    <>
+      <CampaignModal 
+        isOpen={showCampaignModal} 
+        onClose={() => setShowCampaignModal(false)} 
+      />
+      <section className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-foreground flex items-center">
           <i className="fas fa-rocket text-primary mr-3"></i>
@@ -116,7 +124,11 @@ export default function ActiveCampaigns({ campaigns, isLoading }: ActiveCampaign
           </div>
           <h3 className="text-xl font-bold text-foreground mb-2">No Active Campaigns</h3>
           <p className="text-muted-foreground mb-4">Create your first DM campaign to start engaging with Instagram influencers!</p>
-          <button className="bg-gradient-to-r from-primary to-pink-500 text-primary-foreground px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-opacity" data-testid="button-create-first-campaign">
+          <button 
+            className="bg-gradient-to-r from-primary to-pink-500 text-primary-foreground px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-opacity" 
+            onClick={() => setShowCampaignModal(true)}
+            data-testid="button-create-first-campaign"
+          >
             <i className="fas fa-plus mr-2"></i>Create Campaign
           </button>
         </div>
@@ -239,5 +251,6 @@ export default function ActiveCampaigns({ campaigns, isLoading }: ActiveCampaign
         ))
       )}
     </section>
+    </>
   );
 }
