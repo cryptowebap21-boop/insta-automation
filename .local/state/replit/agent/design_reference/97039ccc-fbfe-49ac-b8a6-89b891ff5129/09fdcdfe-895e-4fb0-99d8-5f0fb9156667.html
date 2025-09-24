@@ -1,0 +1,1042 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IG Extractor + DM Assistant - SaaS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["Inter", "system-ui", "sans-serif"],
+                },
+                animation: {
+                    'progress': 'progress 2s ease-in-out',
+                    'fade-in': 'fadeIn 0.3s ease-in-out',
+                    'slide-up': 'slideUp 0.3s ease-out',
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(210 40% 98%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(221.2 83.2% 53.3%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(210 40% 96%);
+            --secondary-foreground: hsl(222.2 84% 4.9%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(262.1 83.3% 57.8%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 84.2% 60.2%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(262.1 83.3% 57.8%);
+            --radius: 0.75rem;
+        }
+
+        .dark {
+            --background: hsl(222.2 84% 4.9%);
+            --foreground: hsl(210 40% 98%);
+            --card: hsl(222.2 84% 4.9%);
+            --card-foreground: hsl(210 40% 98%);
+            --popover: hsl(222.2 84% 4.9%);
+            --popover-foreground: hsl(210 40% 98%);
+            --primary: hsl(221.2 83.2% 53.3%);
+            --primary-foreground: hsl(222.2 84% 4.9%);
+            --secondary: hsl(217.2 32.6% 17.5%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217.2 32.6% 17.5%);
+            --muted-foreground: hsl(215 20.2% 65.1%);
+            --accent: hsl(262.1 83.3% 57.8%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 62.8% 30.6%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(217.2 32.6% 17.5%);
+            --input: hsl(217.2 32.6% 17.5%);
+            --ring: hsl(262.1 83.3% 57.8%);
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, hsl(221.2 83.2% 53.3%) 0%, hsl(262.1 83.3% 57.8%) 100%);
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen bg-background font-sans antialiased">
+    <!-- Navigation Header -->
+    <nav class="sticky top-0 z-50 bg-card border-b border-border backdrop-blur-sm bg-card/95">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="gradient-bg p-2 rounded-lg">
+                        <i class="fab fa-instagram text-white text-xl"></i>
+                    </div>
+                    <div class="hidden sm:block">
+                        <h1 class="text-xl font-bold text-foreground">IG Extractor</h1>
+                        <p class="text-xs text-muted-foreground">+ DM Assistant</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#dashboard" class="text-foreground hover:text-primary transition-colors">Dashboard</a>
+                    <a href="#extraction" class="text-muted-foreground hover:text-primary transition-colors">Extraction</a>
+                    <a href="#dm-assistant" class="text-muted-foreground hover:text-primary transition-colors">DM Assistant</a>
+                    <a href="#pricing" class="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Plan Badge -->
+                    <div class="hidden sm:flex items-center space-x-2 bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-crown text-xs"></i>
+                        <span data-mock="true">Pro Plan</span>
+                    </div>
+                    
+                    <!-- User Avatar -->
+                    <div class="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <button class="md:hidden">
+                        <i class="fas fa-bars text-foreground"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- @COMPONENT: Dashboard [Main dashboard with quota indicators] -->
+        <div id="dashboard" class="space-y-8">
+            <!-- Welcome Section -->
+            <div class="text-center space-y-4">
+                <h2 class="text-3xl font-bold text-foreground">Welcome back!</h2>
+                <p class="text-muted-foreground max-w-2xl mx-auto">Extract Instagram handles from websites and manage your DM campaigns efficiently with our mobile-first platform.</p>
+            </div>
+
+            <!-- Quota Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- DM Quota -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-paper-plane text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-foreground">DMs Today</h3>
+                                <p class="text-sm text-muted-foreground">Pro Plan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-muted-foreground">Used</span>
+                            <span class="font-medium text-foreground" data-mock="true">247 / 330</span>
+                        </div>
+                        <div class="w-full bg-muted rounded-full h-2">
+                            <div class="bg-gradient-to-r from-primary to-accent h-2 rounded-full progress-bar" style="width: 75%"></div>
+                        </div>
+                        <p class="text-xs text-muted-foreground">Resets at midnight UTC</p>
+                    </div>
+                </div>
+
+                <!-- Extraction Quota -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-download text-accent"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-foreground">Extractions</h3>
+                                <p class="text-sm text-muted-foreground">Pro Plan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-muted-foreground">Used</span>
+                            <span class="font-medium text-foreground" data-mock="true">156 / 330</span>
+                        </div>
+                        <div class="w-full bg-muted rounded-full h-2">
+                            <div class="bg-gradient-to-r from-accent to-primary h-2 rounded-full progress-bar" style="width: 47%"></div>
+                        </div>
+                        <p class="text-xs text-muted-foreground">Resets at midnight UTC</p>
+                    </div>
+                </div>
+
+                <!-- Success Rate -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chart-line text-green-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-foreground">Success Rate</h3>
+                                <p class="text-sm text-muted-foreground">This Week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="text-2xl font-bold text-green-500" data-mock="true">94.2%</div>
+                        <p class="text-xs text-muted-foreground">+2.1% from last week</p>
+                    </div>
+                </div>
+
+                <!-- Active Campaigns -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-rocket text-orange-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-foreground">Campaigns</h3>
+                                <p class="text-sm text-muted-foreground">Active</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="text-2xl font-bold text-foreground" data-mock="true">7</div>
+                        <p class="text-xs text-muted-foreground">3 scheduled for today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- CSV Extraction Tool -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-csv text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground">CSV Extraction Tool</h3>
+                            <p class="text-sm text-muted-foreground">Extract Instagram handles from website URLs</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Zone -->
+                    <div class="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer group">
+                        <div class="space-y-4">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto group-hover:bg-primary/20 transition-colors">
+                                <i class="fas fa-cloud-upload-alt text-primary text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-foreground font-medium">Drop your CSV file here</p>
+                                <p class="text-sm text-muted-foreground">or click to browse</p>
+                            </div>
+                            <div class="text-xs text-muted-foreground">
+                                Supports up to 150 URLs on your plan
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                        <i class="fas fa-magic mr-2"></i>
+                        Start Extraction
+                    </button>
+                </div>
+
+                <!-- DM Assistant -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center">
+                            <i class="fas fa-comments text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground">DM Assistant</h3>
+                            <p class="text-sm text-muted-foreground">Create and manage Instagram DM campaigns</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Template Preview -->
+                    <div class="bg-muted/50 rounded-lg p-4 mb-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-foreground" data-mock="true">
+                                    Hi {{name}}! 👋 Loved your recent post about {{topic}}. Would love to connect and share something that might interest you...
+                                </p>
+                                <p class="text-xs text-muted-foreground mt-2">Template Preview • Spintax Enabled</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="bg-secondary text-secondary-foreground font-medium py-2 px-4 rounded-lg hover:bg-secondary/80 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>
+                            Edit Template
+                        </button>
+                        <button class="bg-gradient-to-r from-accent to-primary text-accent-foreground font-medium py-2 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Create Campaign
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: Dashboard -->
+
+        <!-- @COMPONENT: ExtractionResults [Extraction results table and progress] -->
+        <div id="extraction" class="mt-16 space-y-8">
+            <div class="text-center space-y-4">
+                <h2 class="text-3xl font-bold text-foreground">Extraction Results</h2>
+                <p class="text-muted-foreground">Real-time progress and results from your CSV extractions</p>
+            </div>
+
+            <!-- Progress Card -->
+            <div class="bg-card rounded-xl p-6 border border-border shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-foreground" data-mock="true">startup_websites_batch_3.csv</h3>
+                        <p class="text-sm text-muted-foreground">Uploaded 2 minutes ago</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-medium text-green-500">Processing</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-muted-foreground">Progress</span>
+                        <span class="font-medium text-foreground" data-mock="true">127 / 150 URLs processed</span>
+                    </div>
+                    <div class="w-full bg-muted rounded-full h-3">
+                        <div class="bg-gradient-to-r from-green-400 to-green-500 h-3 rounded-full progress-bar" style="width: 85%"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-lg font-bold text-green-500" data-mock="true">89</div>
+                            <div class="text-xs text-muted-foreground">Found</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-orange-500" data-mock="true">23</div>
+                            <div class="text-xs text-muted-foreground">Processing</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-red-500" data-mock="true">15</div>
+                            <div class="text-xs text-muted-foreground">Failed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div class="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-border">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
+                        <h3 class="text-lg font-semibold text-foreground">Extracted Handles</h3>
+                        <div class="flex items-center space-x-3">
+                            <button class="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors">
+                                <i class="fas fa-filter mr-2"></i>
+                                Filter
+                            </button>
+                            <button class="bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
+                                <i class="fas fa-download mr-2"></i>
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-muted/50">
+                            <tr>
+                                <th class="text-left p-4 font-medium text-muted-foreground">Domain</th>
+                                <th class="text-left p-4 font-medium text-muted-foreground">Instagram Handle</th>
+                                <th class="text-left p-4 font-medium text-muted-foreground">Confidence</th>
+                                <th class="text-left p-4 font-medium text-muted-foreground">Source</th>
+                                <th class="text-left p-4 font-medium text-muted-foreground">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-border">
+                            <!-- @MAP: results.map(result => ( -->
+                            <tr class="hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-primary/10 rounded flex items-center justify-center">
+                                            <i class="fas fa-globe text-primary text-xs"></i>
+                                        </div>
+                                        <span class="font-medium text-foreground">techstartup.com</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fab fa-instagram text-accent"></i>
+                                        <span class="font-medium text-accent">@techstartup_official</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-12 h-2 bg-muted rounded-full">
+                                            <div class="h-2 bg-green-500 rounded-full" style="width: 94%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-green-500">94%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-muted-foreground">Footer Link</span>
+                                </td>
+                                <td class="p-4">
+                                    <button class="text-primary hover:text-primary/80 transition-colors">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-primary/10 rounded flex items-center justify-center">
+                                            <i class="fas fa-globe text-primary text-xs"></i>
+                                        </div>
+                                        <span class="font-medium text-foreground">designagency.co</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fab fa-instagram text-accent"></i>
+                                        <span class="font-medium text-accent">@design_agency_co</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-12 h-2 bg-muted rounded-full">
+                                            <div class="h-2 bg-green-500 rounded-full" style="width: 87%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-green-500">87%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-muted-foreground">Contact Page</span>
+                                </td>
+                                <td class="p-4">
+                                    <button class="text-primary hover:text-primary/80 transition-colors">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-primary/10 rounded flex items-center justify-center">
+                                            <i class="fas fa-globe text-primary text-xs"></i>
+                                        </div>
+                                        <span class="font-medium text-foreground">fitnessblog.net</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fab fa-instagram text-accent"></i>
+                                        <span class="font-medium text-accent">@fitness_blog_daily</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-12 h-2 bg-muted rounded-full">
+                                            <div class="h-2 bg-yellow-500 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-yellow-500">72%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-muted-foreground">About Page</span>
+                                </td>
+                                <td class="p-4">
+                                    <button class="text-primary hover:text-primary/80 transition-colors">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- @END_MAP )) -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: ExtractionResults -->
+
+        <!-- @COMPONENT: DMAssistant [DM template builder and campaign management] -->
+        <div id="dm-assistant" class="mt-16 space-y-8">
+            <div class="text-center space-y-4">
+                <h2 class="text-3xl font-bold text-foreground">DM Assistant</h2>
+                <p class="text-muted-foreground">Create personalized message templates and manage your outreach campaigns</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Template Builder -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm">
+                    <h3 class="text-lg font-semibold text-foreground mb-6">Template Builder</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Message Template</label>
+                            <textarea 
+                                class="w-full bg-input border border-border rounded-lg p-3 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                                rows="6"
+                                placeholder="Hi {{name}}! 👋 I loved your recent post about {{topic}}. Would love to connect and share something that might interest you..."
+                                data-mock="true"
+                            >Hi {{name}}! 👋 I loved your recent post about {{topic}}. Would love to connect and share something that might interest you...</textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Available Variables</label>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium cursor-pointer hover:bg-primary/20 transition-colors">{{name}}</span>
+                                <span class="bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-medium cursor-pointer hover:bg-accent/20 transition-colors">{{topic}}</span>
+                                <span class="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm font-medium cursor-pointer hover:bg-green-500/20 transition-colors">{{industry}}</span>
+                                <span class="bg-orange-500/10 text-orange-500 px-3 py-1 rounded-full text-sm font-medium cursor-pointer hover:bg-orange-500/20 transition-colors">{{location}}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-muted/50 rounded-lg p-4">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-magic text-accent"></i>
+                                <span class="text-sm font-medium text-foreground">Spintax Enabled</span>
+                            </div>
+                            <p class="text-sm text-muted-foreground">We'll automatically generate variations of your message to avoid duplicates and increase engagement rates.</p>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Template
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Campaign Queue -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-foreground">Campaign Queue</h3>
+                        <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-lg text-sm hover:bg-secondary/80 transition-colors">
+                            <i class="fas fa-plus mr-1"></i>
+                            Add Handles
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Queue Stats -->
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-lg font-bold text-blue-500" data-mock="true">12</div>
+                                <div class="text-xs text-muted-foreground">Queued</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-green-500" data-mock="true">45</div>
+                                <div class="text-xs text-muted-foreground">Sent</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-orange-500" data-mock="true">8</div>
+                                <div class="text-xs text-muted-foreground">Replied</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Queue Items -->
+                        <div class="space-y-3 max-h-80 overflow-y-auto">
+                            <!-- @MAP: queueItems.map(item => ( -->
+                            <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                        <i class="fab fa-instagram text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground text-sm">@startup_founder</p>
+                                        <p class="text-xs text-muted-foreground">Scheduled for 2:30 PM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-blue-500/10 text-blue-500 px-2 py-1 rounded text-xs font-medium">Queued</span>
+                                    <button class="text-muted-foreground hover:text-destructive transition-colors">
+                                        <i class="fas fa-trash text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                        <i class="fab fa-instagram text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground text-sm">@design_studio</p>
+                                        <p class="text-xs text-muted-foreground">Sent 1 hour ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-green-500/10 text-green-500 px-2 py-1 rounded text-xs font-medium">Sent</span>
+                                    <button class="text-primary hover:text-primary/80 transition-colors">
+                                        <i class="fas fa-external-link-alt text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                        <i class="fab fa-instagram text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground text-sm">@fitness_coach</p>
+                                        <p class="text-xs text-muted-foreground">Replied 30 mins ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-orange-500/10 text-orange-500 px-2 py-1 rounded text-xs font-medium">Replied</span>
+                                    <button class="text-primary hover:text-primary/80 transition-colors">
+                                        <i class="fas fa-eye text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                        
+                        <div class="pt-4 border-t border-border">
+                            <button class="w-full bg-gradient-to-r from-accent to-primary text-accent-foreground font-medium py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                                <i class="fas fa-rocket mr-2"></i>
+                                Launch Campaign
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rate Advisor -->
+            <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 rounded-xl p-6 border border-orange-200 dark:border-orange-800">
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-orange-500 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-orange-900 dark:text-orange-100">Rate Limiting Advisory</h3>
+                        <p class="text-orange-800 dark:text-orange-200 mt-2">
+                            To maintain Instagram compliance and avoid account restrictions, we recommend sending no more than 50 DMs per hour. 
+                            Your Pro plan allows 330 DMs per day with automatic scheduling to stay within safe limits.
+                        </p>
+                        <div class="mt-4 flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="text-sm text-orange-800 dark:text-orange-200">Safe Rate: 50/hour</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                <span class="text-sm text-orange-800 dark:text-orange-200">Current: 23/hour</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: DMAssistant -->
+
+        <!-- @COMPONENT: PricingSection [Tiered pricing plans display] -->
+        <div id="pricing" class="mt-16 space-y-8">
+            <div class="text-center space-y-4">
+                <h2 class="text-3xl font-bold text-foreground">Choose Your Plan</h2>
+                <p class="text-muted-foreground max-w-2xl mx-auto">Scale your Instagram outreach with our flexible pricing plans designed for marketers of all sizes</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Free Plan -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-center space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground">Free</h3>
+                            <p class="text-sm text-muted-foreground">Test the waters</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="text-3xl font-bold text-foreground">$0</div>
+                            <p class="text-sm text-muted-foreground">Forever free</p>
+                        </div>
+                        
+                        <div class="space-y-3 text-left">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">1 CSV upload per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Up to 150 websites</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">10 DMs per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Basic templates</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-secondary text-secondary-foreground font-medium py-3 px-4 rounded-lg hover:bg-secondary/80 transition-colors">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Starter Plan -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-center space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground">Starter</h3>
+                            <p class="text-sm text-muted-foreground">For growing businesses</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="text-3xl font-bold text-foreground">$55</div>
+                            <p class="text-sm text-muted-foreground">per month</p>
+                        </div>
+                        
+                        <div class="space-y-3 text-left">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">200 DMs per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">200 extractions per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Advanced templates</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Spintax variations</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-primary text-primary-foreground font-medium py-3 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+                            Choose Starter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pro Plan (Featured) -->
+                <div class="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-6 border-2 border-primary shadow-lg hover:shadow-xl transition-shadow relative">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
+                            Most Popular
+                        </span>
+                    </div>
+                    
+                    <div class="text-center space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground">Pro</h3>
+                            <p class="text-sm text-muted-foreground">For serious marketers</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="text-3xl font-bold text-primary">$87</div>
+                            <p class="text-sm text-muted-foreground">per month</p>
+                        </div>
+                        
+                        <div class="space-y-3 text-left">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">330 DMs per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">330 extractions per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">DM scheduling</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Advanced analytics</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Priority support</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                            Choose Pro
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Agency Plan -->
+                <div class="bg-card rounded-xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-center space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground">Agency</h3>
+                            <p class="text-sm text-muted-foreground">For teams & agencies</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="text-3xl font-bold text-foreground">$155</div>
+                            <p class="text-sm text-muted-foreground">per month</p>
+                        </div>
+                        
+                        <div class="space-y-3 text-left">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">500 DMs per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">500 extractions per day</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Multiple IG accounts</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">Team collaboration</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check text-green-500 text-sm"></i>
+                                <span class="text-sm text-foreground">White-label reports</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-accent text-accent-foreground font-medium py-3 px-4 rounded-lg hover:bg-accent/90 transition-colors">
+                            Choose Agency
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Comparison -->
+            <div class="bg-card rounded-xl p-6 border border-border shadow-sm">
+                <h3 class="text-lg font-semibold text-foreground mb-6 text-center">All plans include</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-green-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground">Instagram Compliance</p>
+                            <p class="text-sm text-muted-foreground">Safe rate limiting</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cloud text-blue-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground">Cloud Processing</p>
+                            <p class="text-sm text-muted-foreground">Fast extractions</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-headset text-purple-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground">24/7 Support</p>
+                            <p class="text-sm text-muted-foreground">Always here to help</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: PricingSection -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-muted/30 border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="gradient-bg p-2 rounded-lg">
+                            <i class="fab fa-instagram text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-foreground">IG Extractor</h3>
+                            <p class="text-xs text-muted-foreground">+ DM Assistant</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-muted-foreground">
+                        Streamline your Instagram outreach with automated handle extraction and intelligent DM campaigns.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-foreground mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">API</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Integrations</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-foreground mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Status</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-foreground mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Terms</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-border mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
+                <p class="text-sm text-muted-foreground">© 2024 IG Extractor. All rights reserved.</p>
+                <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        (function() {
+            // Simulate real-time progress updates
+            function updateProgress() {
+                const progressBars = document.querySelectorAll('.progress-bar');
+                progressBars.forEach(bar => {
+                    const currentWidth = parseInt(bar.style.width) || 0;
+                    if (currentWidth < 100) {
+                        const newWidth = Math.min(currentWidth + Math.random() * 5, 100);
+                        bar.style.width = newWidth + '%';
+                    }
+                });
+            }
+
+            // Simulate progress updates every 3 seconds
+            setInterval(updateProgress, 3000);
+
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add animation classes on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.bg-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Simulate quota updates
+            function updateQuotas() {
+                const quotaElements = document.querySelectorAll('[data-mock="true"]');
+                // This would normally update with real data from the API
+            }
+        })();
+    </script>
+</body>
+</html>
