@@ -232,12 +232,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/campaigns', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      const { name, dmMessage, handles, scheduledAt, totalHandles } = req.body;
+      
       const campaignData = {
-        ...req.body,
-        userId
+        name,
+        userId,
+        templateId: null, // No templates needed anymore
+        status: scheduledAt ? "scheduled" : "created",
+        totalHandles: totalHandles || handles?.length || 0,
+        sent: 0,
+        replied: 0,
+        interested: 0,
+        failed: 0,
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       };
 
       const campaign = await storage.createCampaign(campaignData);
+      
+      // Create DM queue entries for each handle
+      if (handles && handles.length > 0) {
+        for (const handle of handles) {
+          await storage.createDmQueueEntry({
+            campaignId: campaign.id,
+            igHandle: handle,
+            message: dmMessage,
+            status: "pending",
+          });
+        }
+      }
+      
       res.json(campaign);
     } catch (error: any) {
       console.error("Error creating campaign:", error);

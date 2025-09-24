@@ -40,7 +40,7 @@ export default function Navigation() {
                   {(user as any)?.email || 'User'}
                 </span>
               </div>
-            ) as React.ReactNode}
+            )}
             <a 
               href="/api/logout" 
               className="text-muted-foreground hover:text-foreground transition-colors text-sm"
