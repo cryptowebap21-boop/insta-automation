@@ -9,7 +9,6 @@ import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import CampaignsPage from "@/pages/campaigns";
 import ExtractionsPage from "@/pages/extractions";
-import TemplatesPage from "@/pages/templates";
 import AccountsPage from "@/pages/accounts";
 
 function Router() {
@@ -25,7 +24,6 @@ function Router() {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/campaigns" component={CampaignsPage} />
           <Route path="/extractions" component={ExtractionsPage} />
-          <Route path="/templates" component={TemplatesPage} />
           <Route path="/accounts" component={AccountsPage} />
         </>
       )}

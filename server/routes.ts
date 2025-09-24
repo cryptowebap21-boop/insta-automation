@@ -7,7 +7,6 @@ import fs from "fs";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { z } from "zod";
-import { insertTemplateSchema, insertCampaignSchema } from "@shared/schema";
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -228,85 +227,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Template management
-  app.post('/api/templates', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const templateData = insertTemplateSchema.parse({
-        ...req.body,
-        userId
-      });
-
-      const template = await storage.createTemplate(templateData);
-      res.json(template);
-    } catch (error: any) {
-      console.error("Error creating template:", error);
-      res.status(400).json({ message: error?.message || "Failed to create template" });
-    }
-  });
-
-  app.get('/api/templates', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const templates = await storage.getTemplatesByUser(userId);
-      res.json(templates);
-    } catch (error) {
-      console.error("Error fetching templates:", error);
-      res.status(500).json({ message: "Failed to fetch templates" });
-    }
-  });
-
-  app.put('/api/templates/:templateId', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const templateId = req.params.templateId;
-      
-      const template = await storage.getTemplateById(templateId);
-      if (!template || template.userId !== userId) {
-        return res.status(404).json({ message: "Template not found" });
-      }
-
-      const updateData = {
-        name: req.body.name,
-        content: req.body.content,
-        spintaxVariations: req.body.spintaxVariations,
-        sendRate: req.body.sendRate,
-      };
-
-      await storage.updateTemplate(templateId, updateData);
-      res.json({ message: "Template updated successfully" });
-    } catch (error) {
-      console.error("Error updating template:", error);
-      res.status(500).json({ message: "Failed to update template" });
-    }
-  });
-
-  app.delete('/api/templates/:templateId', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const templateId = req.params.templateId;
-      
-      const template = await storage.getTemplateById(templateId);
-      if (!template || template.userId !== userId) {
-        return res.status(404).json({ message: "Template not found" });
-      }
-
-      await storage.deleteTemplate(templateId);
-      res.json({ message: "Template deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting template:", error);
-      res.status(500).json({ message: "Failed to delete template" });
-    }
-  });
 
   // Campaign management
   app.post('/api/campaigns', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const campaignData = insertCampaignSchema.parse({
+      const campaignData = {
         ...req.body,
         userId
-      });
+      };
 
       const campaign = await storage.createCampaign(campaignData);
       res.json(campaign);

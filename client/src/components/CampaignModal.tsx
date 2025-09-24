@@ -32,15 +32,9 @@ export default function CampaignModal({ isOpen, onClose }: CampaignModalProps) {
   
   const [formData, setFormData] = useState({
     name: "",
-    templateId: "",
+    dmMessage: "",
     resultIds: [],
     scheduledAt: "",
-  });
-
-  // Fetch templates
-  const { data: templates } = useQuery({
-    queryKey: ['/api/templates'],
-    retry: false,
   });
 
   // Fetch recent results
@@ -61,7 +55,7 @@ export default function CampaignModal({ isOpen, onClose }: CampaignModalProps) {
       });
       queryClient.invalidateQueries({ queryKey: ['/api/campaigns'] });
       onClose();
-      setFormData({ name: "", templateId: "", resultIds: [], scheduledAt: "" });
+      setFormData({ name: "", dmMessage: "", resultIds: [], scheduledAt: "" });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -87,10 +81,10 @@ export default function CampaignModal({ isOpen, onClose }: CampaignModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.templateId) {
+    if (!formData.name || !formData.dmMessage) {
       toast({
         title: "Missing Information",
-        description: "Please fill in campaign name and select a template",
+        description: "Please fill in campaign name and DM message",
         variant: "destructive",
       });
       return;
@@ -103,7 +97,7 @@ export default function CampaignModal({ isOpen, onClose }: CampaignModalProps) {
 
     createCampaignMutation.mutate({
       name: formData.name,
-      templateId: formData.templateId,
+      dmMessage: formData.dmMessage,
       resultIds: targetResults,
       scheduledAt: formData.scheduledAt || null,
       totalHandles: targetResults.length,
@@ -137,19 +131,17 @@ export default function CampaignModal({ isOpen, onClose }: CampaignModalProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">DM Template</label>
-            <Select value={formData.templateId} onValueChange={(value) => setFormData(prev => ({ ...prev, templateId: value }))}>
-              <SelectTrigger className="bg-muted border-border" data-testid="select-template">
-                <SelectValue placeholder="Select a template" />
-              </SelectTrigger>
-              <SelectContent>
-                {(templates as any[])?.map((template: any) => (
-                  <SelectItem key={template.id} value={template.id}>
-                    {template.name}
-                  </SelectItem>
-                )) || <SelectItem value="default">Create a template first</SelectItem>}
-              </SelectContent>
-            </Select>
+            <label className="text-sm font-medium text-foreground">DM Message</label>
+            <Textarea
+              value={formData.dmMessage}
+              onChange={(e) => setFormData(prev => ({ ...prev, dmMessage: e.target.value }))}
+              placeholder="Hey! I found your Instagram from your website. I love what you're doing and would love to collaborate..."
+              className="bg-muted border-border min-h-[100px]"
+              data-testid="textarea-dm-message"
+            />
+            <div className="text-xs text-muted-foreground">
+              Write your outreach message. Keep it personal and engaging!
+            </div>
           </div>
 
           <div className="space-y-2">

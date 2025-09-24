@@ -28,11 +28,6 @@ export default function Navigation() {
                 Campaigns
               </a>
             </Link>
-            <Link href="/templates">
-              <a className="text-muted-foreground hover:text-foreground transition-colors" data-testid="nav-templates">
-                Templates
-              </a>
-            </Link>
             <Link href="/accounts">
               <a className="text-muted-foreground hover:text-foreground transition-colors" data-testid="nav-accounts">
                 Accounts
